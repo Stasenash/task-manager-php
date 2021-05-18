@@ -24,6 +24,7 @@ body {
 .jumbotron {
     text-align: center;
     background-color: transparent;
+    margin-top: 10%;
 }
 
 .jumbotron .btn {
