@@ -39,16 +39,17 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Главная', 'url' => ['/site/index']],
+            ['label' => 'Задачи', 'url' => ['/site/tasks']],
+            ['label' => 'О трекере', 'url' => ['/site/about']],
+            ['label' => 'Контакты', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . User::findIdentity(Yii::$app->user->identity->getId())->getLogin() . ')',
+                    'Выйти (' . User::findIdentity(Yii::$app->user->identity->getId())->getLogin() . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
