@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\AddTaskForm;
+use app\models\Type;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -128,6 +131,15 @@ class SiteController extends Controller
 
     public function actionTasks()
     {
-        return $this->render('tasks');
+        $model = new AddTaskForm();
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+
+        return $this->render('tasks', [
+            'model' => $model,
+            'types' => $types,
+            'users' => $users
+        ]);
     }
 }
