@@ -36,6 +36,9 @@ use yii\helpers\Html;
         <?= $form->field($model, 'executor')->dropDownList(
             ArrayHelper::map($users, 'id', 'login')
         ) ?>
+        <?= $form->field($model, 'status')->dropDownList(
+            ArrayHelper::map($statuses, 'id', 'name')
+        ) ?>
 
         <div class="form-group">
             <?= Html::submitButton('Создать', ['class' => 'btn btn-primary', 'name' => 'add-button']) ?>

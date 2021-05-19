@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use app\models\AddTaskForm;
+use app\models\Status;
 use app\models\Type;
 use app\models\User;
+use app\services\TaskService;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -133,13 +135,26 @@ class SiteController extends Controller
     {
         $model = new AddTaskForm();
 
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $taskService = new TaskService();
+                $taskService->addTask($model->type, $model->title, $model->description,
+                    $model->status, $model->executor);
+
+                Yii::$app->session->setFlash('success', 'Задача успешно добавлена!');
+            }
+            return $this->refresh();
+        }
+
         $types = Type::find()->all();
         $users = User::find()->all();
+        $statuses = Status::find()->all();
 
         return $this->render('tasks', [
             'model' => $model,
             'types' => $types,
-            'users' => $users
+            'users' => $users,
+            'statuses' => $statuses
         ]);
     }
 }
