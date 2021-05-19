@@ -10,6 +10,15 @@ use yii\widgets\ActiveForm;
 $this->title = 'Все задачи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+    <input id="search" name="search" type="text" placeholder="Поиск по названию">
+    <script>
+        function search_by_title() {
+            var title = document.getElementById("search").value;
+            window.location.replace("/site/task-search?title=" + title);
+        }
+    </script>
+    <button class="btn btn-primary" onclick="search_by_title()">Поиск</button>
+
     <div class="site-tasks">
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="flex-container">

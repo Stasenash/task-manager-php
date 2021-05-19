@@ -236,4 +236,25 @@ class SiteController extends Controller
             'tasks' => $tasks
         ]);
     }
+
+    public function actionTaskSearch() {
+        $model = new AddTaskForm();
+
+        $title = Yii::$app->request->get('title');
+        $taskService = new TaskService();
+        $tasks = $taskService->findByTitle($title);
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+
+        return $this->render('tasks', [
+            'model' => $model,
+            'types' => $types,
+            'users' => $users,
+            'statuses' => $statuses,
+            'tasks' => $tasks
+        ]);
+    }
 }

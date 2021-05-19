@@ -49,4 +49,11 @@ class TaskService {
             ->one();
         return $task;
     }
+
+    public function findByTitle($title) {
+        $tasks = Task::find()
+            ->andWhere(['like', 'title', $title])
+            ->all();
+        return $tasks;
+    }
 }
