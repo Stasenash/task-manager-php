@@ -142,6 +142,16 @@ class SiteController extends Controller
         $id = Yii::$app->request->get('id');
         $taskService = new TaskService();
 
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $taskService->updateTask($id, $model->type, $model->title, $model->description,
+                    $model->status, $model->executor);
+
+                Yii::$app->session->setFlash('success', 'Задача успешно обновлена!');
+            }
+            return $this->refresh();
+        }
+
         if (!$id || !$taskService->findById($id)) {
             return $this->render('error');
         }
@@ -187,6 +197,30 @@ class SiteController extends Controller
             }
             return $this->refresh();
         }
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+        $tasks = Task::find()->all();
+
+        return $this->render('tasks', [
+            'model' => $model,
+            'types' => $types,
+            'users' => $users,
+            'statuses' => $statuses,
+            'tasks' => $tasks
+        ]);
+    }
+
+    public function actionDeleteTask() {
+        $model = new AddTaskForm();
+
+        $id = Yii::$app->request->get('id');
+        $taskService = new TaskService();
+        $taskService->deleteTask($id);
+
+        Yii::$app->session->setFlash('success', 'Задача успешно удалена!');
 
         $types = Type::find()->all();
         $users = User::find()->all();
