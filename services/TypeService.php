@@ -9,4 +9,11 @@ class TypeService {
             ->where(['id' => $id])
             ->one();
     }
+
+    public function findByName($name)
+    {
+        return Type::find()
+            ->where(['name' => $name])
+            ->one();
+    }
 }

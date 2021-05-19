@@ -9,4 +9,11 @@ class StatusService {
             ->where(['id' => $id])
             ->one();
     }
+
+    public function findByName($name)
+    {
+        return Status::find()
+            ->where(['name' => $name])
+            ->one();
+    }
 }

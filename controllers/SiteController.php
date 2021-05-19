@@ -257,4 +257,44 @@ class SiteController extends Controller
             'tasks' => $tasks
         ]);
     }
+
+    public function actionTaskFilter() {
+        $model = new AddTaskForm();
+
+        $filter = Yii::$app->request->get('filter');
+        $name = Yii::$app->request->get('name');
+
+        $taskService = new TaskService();
+        $typeService = new TypeService();
+        $statusService = new StatusService();
+
+        $tasks = [];
+
+        if ($filter == "type") {
+            $type_id = $typeService->findByName($name)->id;
+            $tasks = $taskService->find_by("type", $type_id);
+        }else if ($filter == "status") {
+            $status_id = $statusService->findByName($name)->id;
+            $tasks = $taskService->find_by("status", $status_id);
+        }else if ($filter == "author") {
+            $user_id = User::findByUsername($name)->id;
+            $tasks = $taskService->find_by("author_id", $user_id);
+        }else if ($filter == "executor") {
+            $user_id = User::findByUsername($name)->id;
+            $tasks = $taskService->find_by("executor_id", $user_id);
+        }
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+
+        return $this->render('tasks', [
+            'model' => $model,
+            'types' => $types,
+            'users' => $users,
+            'statuses' => $statuses,
+            'tasks' => $tasks
+        ]);
+    }
 }

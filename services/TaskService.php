@@ -56,4 +56,11 @@ class TaskService {
             ->all();
         return $tasks;
     }
+
+    public function find_by($filter, $value) {
+        $tasks = Task::find()
+            ->where([$filter => $value])
+            ->all();
+        return $tasks;
+    }
 }

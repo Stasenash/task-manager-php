@@ -16,8 +16,42 @@ $this->params['breadcrumbs'][] = $this->title;
             var title = document.getElementById("search").value;
             window.location.replace("/site/task-search?title=" + title);
         }
+
+        function filter_by(filter) {
+            console.log(filter);
+            var name = document.getElementById(filter).value;
+            console.log(name);
+            window.location.replace("/site/task-filter?filter=" + filter + "&name=" + name);
+        }
     </script>
     <button class="btn btn-primary" onclick="search_by_title()">Поиск</button>
+    <select id="type" onchange="filter_by('type')">
+        <option>Тип</option>
+        <?php foreach ($types as $type) { ?>
+            <option><?=$type->name?></option>
+        <?php } ?>
+    </select>
+
+    <select id="status" onchange="filter_by('status')">
+        <option>Статус</option>
+        <?php foreach ($statuses as $status) { ?>
+            <option><?=$status->name?></option>
+        <?php } ?>
+    </select>
+
+    <select id="author" onchange="filter_by('author')">
+        <option>Автор</option>
+        <?php foreach ($users as $user) { ?>
+            <option><?=$user->login?></option>
+        <?php } ?>
+    </select>
+
+    <select id="executor" onchange="filter_by('executor')">
+        <option>Исполнитель</option>
+        <?php foreach ($users as $user) { ?>
+            <option><?=$user->login?></option>
+        <?php } ?>
+    </select>
 
     <div class="site-tasks">
         <h1><?= Html::encode($this->title) ?></h1>
