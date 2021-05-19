@@ -5,6 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+/**
+ *
+ * AddTaskForm is the model behind the add task form.
+ *
+ */
+
 class AddTaskForm extends Model
 {
     public $title;
@@ -13,7 +19,9 @@ class AddTaskForm extends Model
     public $executor;
     public $status;
 
-
+    /**
+     * @return array customized attribute labels
+     */
     public function attributeLabels() {
         return [
             'title' => 'Название',
@@ -24,6 +32,9 @@ class AddTaskForm extends Model
         ];
     }
 
+    /**
+     * @return array the validation rules.
+     */
     public function rules()
     {
         return [
