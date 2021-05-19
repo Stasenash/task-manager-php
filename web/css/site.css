@@ -38,8 +38,19 @@ body {
 }
 
 .add-btn {
-    margin-top: -76px;
+    margin-top: 10px;
     margin-left: 200px;
+}
+
+.change-btn {
+    margin-top: 5vh;
+    margin-left: 0;
+}
+
+.flex-container{
+    display: flex;
+    width: 500px;
+    justify-content: space-between;
 }
 
 /* add sorting icons to gridview sort links */

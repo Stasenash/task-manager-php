@@ -1,17 +1,30 @@
 <?php
-    use yii\bootstrap\Modal;
+use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-    use yii\widgets\ActiveForm;
+use yii\widgets\ActiveForm;
 
-    /* @var $form yii\bootstrap\ActiveForm */
-    /* @var $model app\models\ContactForm */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model app\models\ContactForm */
 
-    $this->title = 'Все задачи';
-    $this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Все задачи';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="site-tasks">
         <h1><?= Html::encode($this->title) ?></h1>
+        <div class="flex-container">
+            <p>Ключ</p>
+            <p>Название</p>
+            <p>Дата создания</p>
+        </div>
+        <?php foreach ($tasks as $task) { ?>
+                <div class="flex-container">
+                    <p><?=$task->id?></p>
+                    <a href="/site/task-description?id=<?=$task->id?>"><?=$task->title?></a>
+                    <p><?=$task->create_date?></p>
+                </div>
+        <?php } ?>
+    </div>
 <?php
     Modal::begin([
         'header' => '<h2>Добавление задачи</h2>',
@@ -45,5 +58,4 @@ use yii\helpers\Html;
         </div>
 
     <?php ActiveForm::end(); ?>
-
 Modal::end();
