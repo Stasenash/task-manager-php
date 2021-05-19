@@ -22,7 +22,17 @@ $model->executor=$task->executor_id;
 <p>Статус: <?=Html::encode($status->name)?></p>
 <p>Дата создания: <?=Html::encode($task->create_date)?></p>
 
-
+    <textarea id="comment" type="text" placeholder="Ваш комментарий"></textarea>
+    <script>
+        function add_comment() {
+            var id = <?=$task->id?>;
+            var text = document.getElementById("comment").value;
+            window.location.replace("/site/add-comment?id=" + id + "&text=" + text);
+        }
+    </script>
+    <button class="btn btn-primary" onclick="add_comment()">Добавить</button>
+    <a href="/site/comments"><button class="btn btn-primary">Посмотреть все комментарии</button></a>
+    </br>
 <?php
 Modal::begin([
     'header' => '<h2>Редактирование задачи</h2>',

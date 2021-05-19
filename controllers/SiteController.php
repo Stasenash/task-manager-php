@@ -7,6 +7,8 @@ use app\models\Status;
 use app\models\Task;
 use app\models\Type;
 use app\models\User;
+use app\models\Comment;
+use app\services\CommentService;
 use app\services\StatusService;
 use app\services\TaskService;
 use app\services\TypeService;
@@ -135,6 +137,47 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
+
+    /**
+     * Displays tasks page.
+     *
+     * @return string
+     */
+    public function actionTasks()
+    {
+        $model = new AddTaskForm();
+
+        $taskService = new TaskService();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $taskService->addTask($model->type, $model->title, $model->description,
+                    $model->status, $model->executor);
+
+                Yii::$app->session->setFlash('success', 'Задача успешно добавлена!');
+            }
+            return $this->refresh();
+        }
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+        $tasks = Task::find()->all();
+
+        return $this->render('tasks', [
+            'model' => $model,
+            'types' => $types,
+            'users' => $users,
+            'statuses' => $statuses,
+            'tasks' => $tasks
+        ]);
+    }
+
+    /**
+     * Displays task description page.
+     *
+     * @return string
+     */
     public function actionTaskDescription()
     {
         $model = new AddTaskForm();
@@ -183,36 +226,11 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionTasks()
-    {
-        $model = new AddTaskForm();
-
-        $taskService = new TaskService();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
-                $taskService->addTask($model->type, $model->title, $model->description,
-                    $model->status, $model->executor);
-
-                Yii::$app->session->setFlash('success', 'Задача успешно добавлена!');
-            }
-            return $this->refresh();
-        }
-
-        $types = Type::find()->all();
-        $users = User::find()->all();
-        $statuses = Status::find()->all();
-
-        $tasks = Task::find()->all();
-
-        return $this->render('tasks', [
-            'model' => $model,
-            'types' => $types,
-            'users' => $users,
-            'statuses' => $statuses,
-            'tasks' => $tasks
-        ]);
-    }
-
+    /**
+     * Action delete task.
+     *
+     * @return string
+     */
     public function actionDeleteTask() {
         $model = new AddTaskForm();
 
@@ -237,6 +255,11 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Action search task.
+     *
+     * @return string
+     */
     public function actionTaskSearch() {
         $model = new AddTaskForm();
 
@@ -258,6 +281,11 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Action filter task.
+     *
+     * @return string
+     */
     public function actionTaskFilter() {
         $model = new AddTaskForm();
 
@@ -295,6 +323,72 @@ class SiteController extends Controller
             'users' => $users,
             'statuses' => $statuses,
             'tasks' => $tasks
+        ]);
+    }
+
+    /**
+     * Action add comment.
+     *
+     * @return string
+     */
+    public function actionAddComment()
+    {
+        $model = new AddTaskForm();
+
+        $id = Yii::$app->request->get('id');
+        $text = Yii::$app->request->get('text');
+
+        $commentService = new CommentService();
+        $taskService = new TaskService();
+
+        if (!$id || !$taskService->findById($id)) {
+            return $this->render('error');
+        }
+        $commentService->addComment($id, $text);
+
+        Yii::$app->session->setFlash('success', 'Комментарий успешно добавлен!');
+
+        $userService = new UserService();
+        $typeService = new TypeService();
+        $statusService = new StatusService();
+
+        $task = $taskService->findById($id);
+        $author = $userService->findById($task->author_id);
+        $executor = $userService->findById($task->executor_id);
+        $type = $typeService->findById($task->type);
+        $status = $statusService->findById($task->status);
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+        return $this->render('task-description', [
+            'model' => $model,
+            'task'=> $task,
+            'author'=> $author,
+            'executor'=> $executor,
+            'type'=> $type,
+            'status'=> $status,
+            'types'=> $types,
+            'users'=> $users,
+            'statuses'=> $statuses
+        ]);
+    }
+
+    /**
+     * Displays all comments.
+     *
+     * @return string
+     */
+    public function actionComments()
+    {
+        $comments = Comment::find()->all();
+
+        $users = User::find()->all();
+
+        return $this->render('comments', [
+            'comments' => $comments,
+            'users' => $users,
         ]);
     }
 }
