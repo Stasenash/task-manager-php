@@ -4,9 +4,13 @@ namespace app\controllers;
 
 use app\models\AddTaskForm;
 use app\models\Status;
+use app\models\Task;
 use app\models\Type;
 use app\models\User;
+use app\services\StatusService;
 use app\services\TaskService;
+use app\services\TypeService;
+use app\services\UserService;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -25,10 +29,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'tasks'],
+                'only' => ['logout', 'tasks','task-description'],
                 'rules' => [
                     [
-                        'actions' => ['logout', 'tasks'],
+                        'actions' => ['logout', 'tasks', 'task-description'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -131,13 +135,51 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
+    public function actionTaskDescription()
+    {
+        $model = new AddTaskForm();
+
+        $id = Yii::$app->request->get('id');
+        $taskService = new TaskService();
+
+        if (!$id || !$taskService->findById($id)) {
+            return $this->render('error');
+        }
+
+        $userService = new UserService();
+        $typeService = new TypeService();
+        $statusService = new StatusService();
+
+        $task = $taskService->findById($id);
+        $author = $userService->findById($task->author_id);
+        $executor = $userService->findById($task->executor_id);
+        $type = $typeService->findById($task->type);
+        $status = $statusService->findById($task->status);
+
+        $types = Type::find()->all();
+        $users = User::find()->all();
+        $statuses = Status::find()->all();
+
+        return $this->render('task-description', [
+            'model' => $model,
+            'task'=> $task,
+            'author'=> $author,
+            'executor'=> $executor,
+            'type'=> $type,
+            'status'=> $status,
+            'types'=> $types,
+            'users'=> $users,
+            'statuses'=> $statuses
+        ]);
+    }
+
     public function actionTasks()
     {
         $model = new AddTaskForm();
 
+        $taskService = new TaskService();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
-                $taskService = new TaskService();
                 $taskService->addTask($model->type, $model->title, $model->description,
                     $model->status, $model->executor);
 
@@ -150,11 +192,14 @@ class SiteController extends Controller
         $users = User::find()->all();
         $statuses = Status::find()->all();
 
+        $tasks = Task::find()->all();
+
         return $this->render('tasks', [
             'model' => $model,
             'types' => $types,
             'users' => $users,
-            'statuses' => $statuses
+            'statuses' => $statuses,
+            'tasks' => $tasks
         ]);
     }
 }
