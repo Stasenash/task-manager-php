@@ -28,6 +28,7 @@ class AddTaskForm extends Model
     {
         return [
             [['title', 'type', 'status', 'executor'], 'required'],
+            ['description', 'string'],
         ];
     }
 }
