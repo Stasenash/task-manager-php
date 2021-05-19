@@ -10,15 +10,22 @@ class TaskService {
             $task = new Task();
             $task->type = $type;
             $task->title = $title;
-            if ($description != null) {
-                $task->description = $description;
-            }else {
+            if (!isset($description)) {
                 $task->description = "";
+            }else {
+                $task->description = $description;
             }
             $task->status = $status;
             $task->author_id = Yii::$app->user->id;
             $task->executor_id = $executor;
             $task->create_date = Yii::$app->formatter->asDateTime('now', 'yyyy-MM-dd H:i:s');
             $task->save();
+        }
+
+        public function findById($id) {
+            $task = Task::find()
+                ->where(['id' => $id])
+                ->one();
+            return $task;
         }
     }
