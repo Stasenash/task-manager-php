@@ -27,8 +27,12 @@ $config = [
             ],
         ],
         'queue' => [
-            'class' => yii\queue\file\Queue::class,
-            'as log' => \yii\queue\LogBehavior::class
+            'class' => \yii\queue\amqp\Queue::class,
+            'host' => 'localhost',
+            'port' => 5672,
+            'user' => 'guest',
+            'password' => 'guest',
+            'queueName' => 'queue'
         ],
         'db' => $db,
     ],

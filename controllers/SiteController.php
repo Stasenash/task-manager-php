@@ -9,6 +9,7 @@ use app\models\Task;
 use app\models\Type;
 use app\models\User;
 use app\models\Comment;
+use app\rabbitmq\Sender;
 use app\services\CommentService;
 use app\services\StatusService;
 use app\services\TaskService;
@@ -173,9 +174,8 @@ class SiteController extends Controller
                 $taskService->addTask($model->type, $model->title, $model->description,
                     $model->status, $model->executor);
 
-                Yii::$app->queue->push(new MessagingJob([
-                    'message' => 'Задача ' . $model->title . " добавлена.",
-                ]));
+                $sender = new Sender();
+                $sender->sendMessage('Задача ' . $model->title . " добавлена.");
 
                 Yii::$app->session->setFlash('success', 'Задача успешно добавлена!');
             }
@@ -214,9 +214,8 @@ class SiteController extends Controller
                 $taskService->updateTask($id, $model->type, $model->title, $model->description,
                     $model->status, $model->executor);
 
-                Yii::$app->queue->push(new MessagingJob([
-                    'message' => 'Задача ' . $id . " обновлена.",
-                ]));
+                $sender = new Sender();
+                $sender->sendMessage('Задача ' . $id . " обновлена.");
 
                 Yii::$app->session->setFlash('success', 'Задача успешно обновлена!');
             }
@@ -266,11 +265,9 @@ class SiteController extends Controller
         $taskService = new TaskService();
         $taskService->deleteTask($id);
 
-        Yii::$app->queue->push(new MessagingJob([
-            'message' => 'Задача ' . $id . " удалена.",
-        ]));
+        $sender = new Sender();
+        $sender->sendMessage('Задача ' . $id . " удалена.");
 
-        Yii::$app->queue->isDone(1);
         Yii::$app->session->setFlash('success', 'Задача успешно удалена!');
 
         $types = Type::find()->all();
@@ -379,9 +376,8 @@ class SiteController extends Controller
         }
         $commentService->addComment($id, $text);
 
-        Yii::$app->queue->push(new MessagingJob([
-            'message' => 'К задаче ' . $id . " добавлен комментарий.",
-        ]));
+        $sender = new Sender();
+        $sender->sendMessage('К задаче ' . $id . " добавлен комментарий.");
 
         Yii::$app->session->setFlash('success', 'Комментарий успешно добавлен!');
 

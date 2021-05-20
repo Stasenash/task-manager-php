@@ -17,8 +17,12 @@ $config = [
     ],
     'components' => [
         'queue' => [
-            'class' => yii\queue\file\Queue::class,
-            'as log' => \yii\queue\LogBehavior::class
+            'class' => \yii\queue\amqp\Queue::class,
+            'host' => 'localhost',
+            'port' => 5672,
+            'user' => 'guest',
+            'password' => 'guest',
+            'queueName' => 'queue'
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
