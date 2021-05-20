@@ -6,7 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+//    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'bootstrap' => ['queue'],
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -24,6 +25,10 @@ $config = [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        'queue' => [
+            'class' => yii\queue\file\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class
         ],
         'db' => $db,
     ],

@@ -1,17 +1,25 @@
 <?php
 
+
+use yii\queue\amqp\Queue;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['queue'],
+//    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'queue' => [
+            'class' => yii\queue\file\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'tkB7Qbkwktk2nOUk5WxPBY0H-xOQ3rpZ',
