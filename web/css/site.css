@@ -38,8 +38,15 @@ body {
 }
 
 .add-btn {
-    margin-top: 10px;
-    margin-left: 200px;
+    margin-top: -75px;
+    margin-left: 230px;
+}
+
+.reg-btn {
+    height: 50px;
+    width: 430px;
+    margin-top: -150px;
+    margin-left: 355px;
 }
 
 .change-btn {
@@ -47,9 +54,13 @@ body {
     margin-left: 0;
 }
 
+.table-container{
+    width: 100%;
+}
+
 .flex-container{
+    width: 100%;
     display: flex;
-    width: 500px;
     justify-content: space-between;
 }
 

@@ -10,7 +10,6 @@ use yii\base\Model;
  * AddTaskForm is the model behind the add task form.
  *
  */
-
 class AddTaskForm extends Model
 {
     public $title;

@@ -64,8 +64,9 @@ Modal::begin([
     <div class="form-group">
         <?= Html::submitButton('Сохранить изменения', ['class' => 'btn btn-primary', 'name' => 'upd-button']) ?>
     </div>
-    <div class="form-group">
-        <a href="site/delete-task?id=<?=$task->id?>"><button class="btn btn-danger">Удалить задачу</button></a>
+
+    <div>
+        <a href="/site/delete-task?id=<?=$task->id?>"><button type="button" class="btn btn-danger">Удалить задачу</button></a>
     </div>
 
 <?php ActiveForm::end(); ?>

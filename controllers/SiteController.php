@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\AddTaskForm;
+use app\models\RegistrationForm;
 use app\models\Status;
 use app\models\Task;
 use app\models\Type;
@@ -13,6 +14,7 @@ use app\services\StatusService;
 use app\services\TaskService;
 use app\services\TypeService;
 use app\services\UserService;
+use app\rabbitmq\MessagingJob;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -72,7 +74,25 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new RegistrationForm();
+        $userService = new UserService();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $userService->addUser($model->login, $model->email, $model->password);
+
+                Yii::$app->queue->push(new MessagingJob([
+                    'message' => 'Пользователь ' . $model->login . " зарегистрирован.",
+                ]));
+
+                Yii::$app->session->setFlash('success', 'Пользователь успешно зарегистрирован!');
+            }
+            return $this->refresh();
+        }
+
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -153,6 +173,10 @@ class SiteController extends Controller
                 $taskService->addTask($model->type, $model->title, $model->description,
                     $model->status, $model->executor);
 
+                Yii::$app->queue->push(new MessagingJob([
+                    'message' => 'Задача ' . $model->title . " добавлена.",
+                ]));
+
                 Yii::$app->session->setFlash('success', 'Задача успешно добавлена!');
             }
             return $this->refresh();
@@ -189,6 +213,10 @@ class SiteController extends Controller
             if ($model->validate()) {
                 $taskService->updateTask($id, $model->type, $model->title, $model->description,
                     $model->status, $model->executor);
+
+                Yii::$app->queue->push(new MessagingJob([
+                    'message' => 'Задача ' . $id . " обновлена.",
+                ]));
 
                 Yii::$app->session->setFlash('success', 'Задача успешно обновлена!');
             }
@@ -238,6 +266,11 @@ class SiteController extends Controller
         $taskService = new TaskService();
         $taskService->deleteTask($id);
 
+        Yii::$app->queue->push(new MessagingJob([
+            'message' => 'Задача ' . $id . " удалена.",
+        ]));
+
+        Yii::$app->queue->isDone(1);
         Yii::$app->session->setFlash('success', 'Задача успешно удалена!');
 
         $types = Type::find()->all();
@@ -345,6 +378,10 @@ class SiteController extends Controller
             return $this->render('error');
         }
         $commentService->addComment($id, $text);
+
+        Yii::$app->queue->push(new MessagingJob([
+            'message' => 'К задаче ' . $id . " добавлен комментарий.",
+        ]));
 
         Yii::$app->session->setFlash('success', 'Комментарий успешно добавлен!');
 

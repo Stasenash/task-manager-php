@@ -55,18 +55,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="site-tasks">
         <h1><?= Html::encode($this->title) ?></h1>
-        <div class="flex-container">
-            <p>Ключ</p>
-            <p>Название</p>
-            <p>Дата создания</p>
-        </div>
+        <table class="table-container">
+            <tr><th>Ключ</th>
+            <th>Тип</th>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Исполнитель</th>
+            <th>Статус</th>
+            <th>Дата создания</th></tr>
+<!--        </table>-->
         <?php foreach ($tasks as $task) { ?>
-                <div class="flex-container">
-                    <p><?=$task->id?></p>
-                    <a href="/site/task-description?id=<?=$task->id?>"><?=$task->title?></a>
-                    <p><?=$task->create_date?></p>
-                </div>
+            <tr><td><?=$task->id?></td>
+            <td><?=$types[$task->type - 1]->name?></td>
+            <td><a href="/site/task-description?id=<?=$task->id?>"><?=$task->title?></a></td>
+            <td><?=$users[$task->author_id - 1]->login?></td>
+            <td><?=$users[$task->executor_id - 1]->login?></td>
+            <td><?=$statuses[$task->status - 1]->name?></td>
+            <td><?=$task->create_date?></td></tr
         <?php } ?>
+        </table>
     </div>
 <?php
     Modal::begin([
@@ -101,4 +108,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
     <?php ActiveForm::end(); ?>
-Modal::end();
